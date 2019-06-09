@@ -8,12 +8,18 @@ echo $resolu
 echo $width
 echo $height
 
-# unlock
-adb shell input keyevent 26
-adb shell input swipe $(($width/2)) $height $(($width/2)) 0
+# judge if the screen is power on/off
+flag=$(adb shell dumpsys window policy|grep mScreenOnFully)
+flag=$(expr "$flag" : '.*\mScreenOnFully=\(.*\)')
 
-left_pull=$(($width/5))
-left_push=$(($width/10))
+if [ "$flag"x = "false"x ]; then
+    # unlock
+    adb shell input keyevent 26
+    adb shell input swipe $(($width/2)) $height $(($width/2)) 0
+fi
+
+left_pull=$(($height/4))
+left_push=$(($height/8))
 # screen shot
 adb shell "/system/bin/screencap -p /storage/self/primary/screenshot.png"
 adb pull "/storage/self/primary/screenshot.png" "../images/1.png"
@@ -22,6 +28,8 @@ adb shell "/system/bin/screencap -p /storage/self/primary/screenshot.png"
 adb pull "/storage/self/primary/screenshot.png" "../images/2.png"
 adb shell input swipe $(($width/2)) $left_push $(($width/2)) $(($height-$left_push))
 
-# lock
-adb shell input keyevent 26
+if [ "$flag"x = "false"x ]; then
+    # lock
+    adb shell input keyevent 26
+fi
 
