@@ -4,9 +4,11 @@
 resolu=$(adb shell wm size)
 width=$(expr "$resolu" : '.*\ \(.*\)\x')
 height=$(expr "$resolu" : '.*\x\(.*\)')
-echo $resolu
-echo $width
-echo $height
+
+if [ ! $width -o ! $height ]; then
+  echo "resolution is NULL, please check is devices is connected"
+  exit
+fi
 
 # judge if the screen is power on/off
 flag=$(adb shell dumpsys window policy|grep mScreenOnFully)
@@ -14,7 +16,8 @@ flag=$(adb shell dumpsys window policy|grep mScreenOnFully)
 if [[ $flag == *false* ]]; then
     # unlock
     adb shell input keyevent 26
-    adb shell input swipe $(($width/2)) $(($height/2)) $(($width/2)) 0
+    adb shell input swipe $(($width/2)) $(($height/2)) $(($width/2)) $(($height/4))
+    adb shell input swipe $(($width/2)) $(($height/4)) $(($width/2)) $(($height/2))
 fi
 
 echo "test"
