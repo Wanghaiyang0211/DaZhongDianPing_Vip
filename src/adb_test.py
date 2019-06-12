@@ -1,5 +1,9 @@
 # -*- coding: UTF-8 -*-
 
 import os
+import time
 
-os.system("../script/ADBScreenShot.sh")
+while True:
+    os.system("../script/ADBScreenShot.sh")
+    time.sleep(10)
+
